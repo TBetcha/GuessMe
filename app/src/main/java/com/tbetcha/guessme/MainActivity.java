@@ -119,12 +119,13 @@ public class MainActivity extends AppCompatActivity {
             corrAns = false;
             strikeOne.setVisibility(View.VISIBLE);
             strikeTwo.setVisibility(View.INVISIBLE);
-            Toast.makeText(this, "one strike", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Strike one", Toast.LENGTH_SHORT).show();
         } else if (hasOneStrike && !hasTwoStrike) {
             hasOneStrike = true;
             hasTwoStrike = true;
             corrAns = false;
             strikeTwo.setVisibility(View.VISIBLE);
+            Toast.makeText(this,"Strike two",Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "You struck out", Toast.LENGTH_SHORT).show();
             begin();
