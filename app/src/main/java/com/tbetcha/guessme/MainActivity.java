@@ -21,11 +21,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageView strikeOne;
     private ImageView strikeTwo;
     private ImageView showItem;
+    private ImageView strikeOut;
     private String currAns;
     private String guess;
     private boolean hasOneStrike = false;
     private boolean hasTwoStrike = false;
     private boolean corrAns = false;
+    private boolean strikeThree = false;
 
    //TODO fix guess line so it has a hint and not solid text
 
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         submitButton = (Button) findViewById(R.id.submit_button);
         strikeOne = (ImageView) findViewById(R.id.strike_one);
         strikeTwo = (ImageView) findViewById(R.id.strike_two);
+        strikeOut = (ImageView) findViewById(R.id.strike_out);
 
 
         typeGuess = (EditText) findViewById(R.id.enter_guess);
@@ -93,19 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 showItem.setImageResource(R.drawable.item_3);
                 showItem.setVisibility(View.VISIBLE);
             }
-
-
             nextQuestion(makeRandNumber());
-             new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            begin();
-                        }
-                    },
-                    2000);
-
-             //TODO clear text from guess line at this point
+             delayedBegin();
 
         } else {
             whichWrong();
@@ -128,7 +120,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Strike two",Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "You struck out", Toast.LENGTH_SHORT).show();
-            begin();
+            strikeThree = true;
+            strikeOut.setVisibility(View.VISIBLE);
+            delayedBegin();
 
         }
     }
@@ -141,9 +135,11 @@ public class MainActivity extends AppCompatActivity {
     public void begin() {
          hasOneStrike = false;
          hasTwoStrike = false;
+         strikeThree = false;
          corrAns = false;
         strikeOne.setVisibility(View.INVISIBLE);
         strikeTwo.setVisibility(View.INVISIBLE);
+        strikeOut.setVisibility(View.INVISIBLE);
         showItem.setVisibility(View.INVISIBLE);
         nextQuestion(makeRandNumber());
     }
@@ -151,9 +147,22 @@ public class MainActivity extends AppCompatActivity {
     public void correct(){
         hasOneStrike = false;
         hasTwoStrike = false;
+        strikeThree = false;
         corrAns = true;
         strikeOne.setVisibility(View.INVISIBLE);
         strikeTwo.setVisibility(View.INVISIBLE);
+        strikeOut.setVisibility(View.INVISIBLE);
+    }
+
+    public void delayedBegin(){
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        begin();
+                    }
+                },
+                2000);
     }
 
 
