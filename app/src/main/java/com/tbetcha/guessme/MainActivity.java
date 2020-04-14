@@ -161,5 +161,4 @@ public class MainActivity extends AppCompatActivity {
         strikeOut.setVisibility(View.INVISIBLE);
     }
 
-
 }
