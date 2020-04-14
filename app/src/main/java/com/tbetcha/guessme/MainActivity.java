@@ -3,6 +3,7 @@ package com.tbetcha.guessme;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,9 +14,8 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Integer ansPics[] = {R.drawable.item_3, R.drawable.item_0, R.drawable.item_1, R.drawable.item_2};
+    private Integer ansPics[] = { R.drawable.item_0, R.drawable.item_1, R.drawable.item_2,R.drawable.item_3};
     private int currAnsPic = 0;
-
     private Button submitButton;
     private EditText typeGuess;
     private ImageView strikeOne;
@@ -26,18 +26,20 @@ public class MainActivity extends AppCompatActivity {
     private String guess;
     private boolean hasOneStrike = false;
     private boolean hasTwoStrike = false;
-    private boolean corrAns = false;
-    private boolean strikeThree = false;
+    public boolean corrAns = false;
+    public boolean strikeThree = false;
 
-   //TODO fix guess line so it has a hint and not solid text
+    private static final String TAG = "Answer:";
 
 
+    //make random number to generate question
     public int makeRandNumber() {
         Random r = new Random();
         currAnsPic = r.nextInt(4);
         return currAnsPic;
     }
 
+    //question array
     private Question[] questions = new Question[]{
             new Question(0, "MILK"),
             new Question(1, "WATER"),
@@ -56,24 +58,23 @@ public class MainActivity extends AppCompatActivity {
         strikeTwo = (ImageView) findViewById(R.id.strike_two);
         strikeOut = (ImageView) findViewById(R.id.strike_out);
 
+        Log.d(TAG, "Text here ");
 
         typeGuess = (EditText) findViewById(R.id.enter_guess);
         typeGuess.setHint("Guess here");
         begin();
 
+        //once submit is pressed get user input and check it against real ans
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getAnswer();
                 checkRealAns();
-
-
             }
         });
-
-
     }
 
+    //generate new question
     public void nextQuestion(int random) {
         makeRandNumber();
         currAns = questions[currAnsPic].getName();
@@ -83,17 +84,8 @@ public class MainActivity extends AppCompatActivity {
         if (getAnswer().equals(questions[currAnsPic].getName())) {
             correct();
             Toast.makeText(this, "WOOHOOO", Toast.LENGTH_SHORT).show();
-            if (questions[currAnsPic].getQuestion() == 0) {
-                showItem.setImageResource(R.drawable.item_0);
-                showItem.setVisibility(View.VISIBLE);
-            } else if (questions[currAnsPic].getQuestion() == 1) {
-                showItem.setImageResource(R.drawable.item_1);
-                showItem.setVisibility(View.VISIBLE);
-            } else if (questions[currAnsPic].getQuestion() == 2) {
-                showItem.setImageResource(R.drawable.item_2);
-                showItem.setVisibility(View.VISIBLE);
-            } else if (questions[currAnsPic].getQuestion() == 3) {
-                showItem.setImageResource(R.drawable.item_3);
+            if (questions[currAnsPic].getQuestion() == currAnsPic) {
+                showItem.setImageResource(ansPics[currAnsPic]);
                 showItem.setVisibility(View.VISIBLE);
             }
             nextQuestion(makeRandNumber());
@@ -132,28 +124,24 @@ public class MainActivity extends AppCompatActivity {
         return guess;
     }
 
+    //initial method to set game to beginning stage
     public void begin() {
-         hasOneStrike = false;
-         hasTwoStrike = false;
          strikeThree = false;
          corrAns = false;
-        strikeOne.setVisibility(View.INVISIBLE);
-        strikeTwo.setVisibility(View.INVISIBLE);
-        strikeOut.setVisibility(View.INVISIBLE);
+         noStrikes();
         showItem.setVisibility(View.INVISIBLE);
         nextQuestion(makeRandNumber());
+        Log.d(TAG, currAns);
     }
 
+    //if correct answer remove strikes and show pic
     public void correct(){
-        hasOneStrike = false;
-        hasTwoStrike = false;
         strikeThree = false;
         corrAns = true;
-        strikeOne.setVisibility(View.INVISIBLE);
-        strikeTwo.setVisibility(View.INVISIBLE);
-        strikeOut.setVisibility(View.INVISIBLE);
+        noStrikes();
     }
 
+    //used after a strike out or correct answer to reset after time delay
     public void delayedBegin(){
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
@@ -163,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 },
                 2000);
+    }
+
+    public void noStrikes(){
+        hasOneStrike = false;
+        hasTwoStrike = false;
+        strikeOne.setVisibility(View.INVISIBLE);
+        strikeTwo.setVisibility(View.INVISIBLE);
+        strikeOut.setVisibility(View.INVISIBLE);
     }
 
 
